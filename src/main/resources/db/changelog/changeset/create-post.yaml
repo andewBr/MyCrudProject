@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-post
+      author: Andrew
+      changes:
+        - createTable:
+            tableName: Post
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: content
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: label_id
+                  type: INT
+                  constraints:
+                    nullable: true
+foreignKeyConstraints:
+  - foreignKeyName: FK_Post_Label
+    baseTableName: Post
+    baseColumnNames: label_id
+    referencedTableName: Label
+    referencedColumnNames: id
+
+
+
+##                    foreignKeyName: fk_questions_author
+#                    references: Label(id)
+
+
+#              baseTableName: Post
+#              baseColumnNames: label_id
+#              referencedTableName: Label
+#              referencedColumnNames: id
+#                foreignKeyConstraints:
+#                  - foreignKeyName: FK_Post_Label
+#                    baseTableName: Post
+#                    baseColumnNames: label_id
+#                    referencedTableName: Label
+#                    referencedColumnNames: id
+
+#                    CONSTRAINT PK_POST PRIMARY KEY (id),
+#                    CONSTRAINT fk_questions_author FOREIGN KEY (user_id) REFERENCES lesson2_2.Label (id)
+#              - column:
+#                  name: label_id
+#                  type: INT
+#                  constraints:
+#                    nullable: true
+#                    foreignKeyName: FK_Post_Label
+#                    referencedTableName: Label
+#                    referencedColumnNames: id
+
+
+# Post (id, content, created, updated, List<Label> labels)

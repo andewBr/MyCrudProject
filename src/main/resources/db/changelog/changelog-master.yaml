@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-label.yaml
+  - include:
+      file: db/changelog/changeset/create-post.yaml
+  - include:
+      file: db/changelog/changeset/create-writer.yaml

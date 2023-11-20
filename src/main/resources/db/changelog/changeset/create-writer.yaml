@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-writer
+      author: Andrew
+      changes:
+        - createTable:
+            tableName: writer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstName
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastName
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+foreignKeyConstraints:
+  - foreignKeyName: FK_Writer-post
+    baseTableName: Writer
+    baseColumnNames: post_id
+    referencedTableName: Post
+    referencedColumnNames: id
+
+
+# Writer (id, firstName, lastName, List<Post> posts)
