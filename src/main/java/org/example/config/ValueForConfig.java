@@ -12,6 +12,5 @@ public enum ValueForConfig {
     URL(ConfigFactory.create(MyConfig.class, System.getProperties()).getUrl()),
     USERNAME(ConfigFactory.create(MyConfig.class, System.getProperties()).getUsername()),
     PASSWORD(ConfigFactory.create(MyConfig.class, System.getProperties()).getPassword());
-
     private final String value;
 }
