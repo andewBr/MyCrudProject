@@ -7,7 +7,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.example.manager.DatabaseManager;
+import org.example.config.DatabaseManager;
 import org.example.model.Label;
 import org.example.model.Post;
 import org.example.model.Writer;
@@ -19,32 +19,25 @@ import org.example.service.LabelServiceImpl;
 import org.example.service.PostServiceImpl;
 import org.example.service.WriterServiceImpl;
 
-import javax.imageio.spi.ServiceRegistry;
-import java.lang.annotation.Target;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class LiquibaseExample {
-    private static final String URL = "jdbc:mysql://localhost:3306/lesson2_2";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
+import static org.example.config.ValueForConfig.*;
 
+public class Main {
 
     public static void main(String[] args) throws LiquibaseException, SQLException {
 
         Connection connection1 = DatabaseManager.getConnection();
 
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL.getValue(), USERNAME.getValue(), PASSWORD.getValue())) {
 
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase("db/changelog/changelog-master.yaml", new ClassLoaderResourceAccessor(), database);
-
             liquibase.update("");
-
 
             // label CRUD
             System.out.println("====================== label CRUD ======================");
