@@ -3,7 +3,6 @@
 ## :pushpin: Содержание:
 
 - [Технологии и инструменты](#earth_africa-технологии-и-инструменты)
-- [Запуск тестов из терминала](#earth_africa-Запуск тестов из терминала)
 
 [краткое описание](https://itpm-wiki.mos.ru/pages/resumedraft.action?draftId=172512555&draftShareId=f6518027-687d-4131-bfaa-eaa6b5802f7c&)
 
