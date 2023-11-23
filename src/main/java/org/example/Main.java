@@ -31,8 +31,6 @@ public class Main {
 
     public static void main(String[] args) throws LiquibaseException, SQLException {
 
-        Connection connection1 = DatabaseManager.getConnection();
-
         try (Connection connection = DriverManager.getConnection(URL.getValue(), USERNAME.getValue(), PASSWORD.getValue())) {
 
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
@@ -41,7 +39,7 @@ public class Main {
 
             // label CRUD
             System.out.println("====================== label CRUD ======================");
-            LabelRepositoryImpl labelRepository = new LabelRepositoryImpl(connection1);
+            LabelRepositoryImpl labelRepository = new LabelRepositoryImpl();
             LabelServiceImpl labelService = new LabelServiceImpl(labelRepository);
             // insert
             labelService.insert(new Label(new Faker().book().title()));
@@ -62,7 +60,7 @@ public class Main {
             Post post1 = new Post(new Faker().company().name(), currentDateTime, yesterdayDateTime, 2);
             Post post2 = new Post(new Faker().company().name(), currentDateTime, weeksAgo, 2);
 
-            PostRepositoryImpl postRepository = new PostRepositoryImpl(connection1);
+            PostRepositoryImpl postRepository = new PostRepositoryImpl();
             PostServiceImpl postService = new PostServiceImpl(postRepository);
             postService.insert(post1);
             postService.insert(post2);
@@ -76,7 +74,7 @@ public class Main {
             Writer writer1 = new Writer(new Faker().name().firstName(), new Faker().name().lastName(), 2);
             Writer writer2 = new Writer(new Faker().name().firstName(), new Faker().name().lastName(), 2);
 
-            WriterRepository writerRepository = new WriterRepositoryImpl(connection1);
+            WriterRepository writerRepository = new WriterRepositoryImpl();
             WriterServiceImpl writerService = new WriterServiceImpl(writerRepository);
             writerService.save(writer1);
             writerService.save(writer2);

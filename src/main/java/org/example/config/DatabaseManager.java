@@ -1,8 +1,8 @@
 package org.example.config;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import lombok.SneakyThrows;
+
+import java.sql.*;
 
 import static org.example.config.ValueForConfig.*;
 
@@ -10,7 +10,7 @@ public class DatabaseManager {
 
     private static Connection connection;
 
-    public static Connection getConnection() {
+    private static Connection getConnection() {
         if (connection == null) {
             try {
                 connection = DriverManager.getConnection(URL.getValue(), USERNAME.getValue(), PASSWORD.getValue());
@@ -19,5 +19,16 @@ public class DatabaseManager {
             }
         }
         return connection;
+    }
+
+    @SneakyThrows
+    public static PreparedStatement prepareStatement(String sqlRequest) {
+        return getConnection().prepareStatement(sqlRequest);
+    }
+
+    @SneakyThrows
+    public static Statement statement() {
+         return getConnection().createStatement();
+
     }
 }

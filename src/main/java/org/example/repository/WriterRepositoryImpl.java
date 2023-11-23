@@ -1,10 +1,9 @@
 package org.example.repository;
 
 import lombok.SneakyThrows;
-import org.example.model.Post;
+import org.example.config.DatabaseManager;
 import org.example.model.Writer;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -13,17 +12,11 @@ import java.util.List;
 
 public class WriterRepositoryImpl implements WriterRepository {
 
-    private Connection connection;
-
-    public WriterRepositoryImpl(Connection connection) {
-        this.connection = connection;
-    }
-
     @SneakyThrows
     @Override
     public Writer findById(Integer integer) {
         String sql = "select * from writer where id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setInt(1, integer);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -38,7 +31,7 @@ public class WriterRepositoryImpl implements WriterRepository {
     public List<Writer> findAll() {
         String sql = "select * from writer";
         List<Writer> writers = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = DatabaseManager.statement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next())
                 writers.add(mapToResultSetWriter(resultSet));
@@ -51,7 +44,7 @@ public class WriterRepositoryImpl implements WriterRepository {
     public String insert(Writer entity) {
         String sql = "insert into writer (firstName, lastName, post_id) values (?, ?, ?)";
         String result;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
             preparedStatement.setInt(3, entity.getPost_id());
@@ -65,7 +58,7 @@ public class WriterRepositoryImpl implements WriterRepository {
     public String removeById(Integer integer) {
         String sql = "delete from writer where id = ?";
         String result;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setInt(1, integer);
             result = preparedStatement.executeUpdate() > 0 ? "writer remove successfully!" : "Failed to remove writer.";
         }

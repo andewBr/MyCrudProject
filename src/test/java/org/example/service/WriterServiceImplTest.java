@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.OngoingStubbing;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,12 +52,12 @@ class WriterServiceImplTest {
 
     @Test
     void save() {
-        when(writerRepositoryMock.insert(expectedResult)).thenReturn("Writer saved successfully!");
+        when(writerRepositoryMock.save(expectedResult)).thenReturn("Writer saved successfully!");
 
         String actualResult = writerService.save(expectedResult);
 
         assertEquals("Writer saved successfully!", actualResult);
-        verify(writerRepositoryMock, times(1)).insert(expectedResult);
+        verify(writerRepositoryMock, times(1)).save(expectedResult);
     }
 
     @Test

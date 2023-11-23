@@ -2,6 +2,7 @@ package org.example.repository;
 
 
 import lombok.SneakyThrows;
+import org.example.config.DatabaseManager;
 import org.example.model.Label;
 import org.example.model.Post;
 import org.example.model.Writer;
@@ -14,19 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostRepositoryImpl implements PostRepository {
-    private Connection connection;
-    LocalDateTime dateTime = LocalDateTime.now();
-
-    public PostRepositoryImpl(Connection connection) {
-        this.connection = connection;
-    }
 
     @SneakyThrows
     @Override
     public Post findById(Integer integer) {
 
         String sql = "select * from post where id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setInt(1, integer);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -42,7 +37,7 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> findAll() {
         ArrayList<Post> posts = new ArrayList<>();
         String sql = "select * from post";
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = DatabaseManager.statement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 posts.add(mapToResultSetWriter(resultSet));
@@ -57,7 +52,7 @@ public class PostRepositoryImpl implements PostRepository {
         String sql = "insert into Post (content, created, updated, label_id) values (?, ?, ?, ?);";
         String result;
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setString(1, entity.getContent());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(entity.getCreated()));
             preparedStatement.setTimestamp(3, Timestamp.valueOf(entity.getUpdated()));
@@ -73,7 +68,7 @@ public class PostRepositoryImpl implements PostRepository {
     public String removeById(Integer integer) {
         String sql = "DELETE FROM post WHERE id = ?";
         String result;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setInt(1, integer);
             result = preparedStatement.executeUpdate() > 0 ? "Post remove successfully!" : "Failed to remove Post.";
         }
