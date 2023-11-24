@@ -26,7 +26,6 @@ import static org.example.config.ValueForConfig.*;
 
 public class ManualApplicationContextExample {
     public static void main(String[] args) throws SQLException, LiquibaseException {
-        // Create an application context
         ApplicationContext context = new ApplicationContext();
 
         context.registerBean("labelView", new LabelView());
@@ -39,7 +38,7 @@ public class ManualApplicationContextExample {
 
         try (Connection connection = DriverManager.getConnection(URL.getValue(), USERNAME.getValue(), PASSWORD.getValue())) {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            Liquibase liquibase = new Liquibase("db/changelog/db.changelog1.xml", new ClassLoaderResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase("db/changelog/db.changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update("");
 
 //         label CRUD
