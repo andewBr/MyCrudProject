@@ -52,12 +52,12 @@ class WriterServiceImplTest {
 
     @Test
     void save() {
-        when(writerRepositoryMock.save(expectedResult)).thenReturn("Writer saved successfully!");
+        when(writerRepositoryMock.insert(expectedResult)).thenReturn(1);
 
-        String actualResult = writerService.save(expectedResult);
+        int save = writerService.save(expectedResult);
 
-        assertEquals("Writer saved successfully!", actualResult);
-        verify(writerRepositoryMock, times(1)).save(expectedResult);
+        assertEquals("Writer saved successfully!", save);
+        verify(writerRepositoryMock, times(1)).insert(expectedResult);
     }
 
     @Test

@@ -24,8 +24,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public String insert(Post entity) {
-        return postRepository.insert(entity);
+    public int insert(Post entity, int LabelId) {
+        return postRepository.insert2(entity, LabelId);
     }
 
     @Override

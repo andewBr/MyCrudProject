@@ -3,14 +3,9 @@ package org.example.repository;
 
 import lombok.SneakyThrows;
 import org.example.config.DatabaseManager;
-import org.example.model.Label;
 import org.example.model.Post;
-import org.example.model.Writer;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +43,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @SneakyThrows
     @Override
-    public String insert(Post entity) {
+    public int insert(Post entity) {
         String sql = "insert into Post (content, created, updated, label_id) values (?, ?, ?, ?);";
-        String result;
 
         try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setString(1, entity.getContent());
@@ -58,21 +52,96 @@ public class PostRepositoryImpl implements PostRepository {
             preparedStatement.setTimestamp(3, Timestamp.valueOf(entity.getUpdated()));
             preparedStatement.setInt(4, entity.getLabels());
 
-            result = preparedStatement.executeUpdate() > 0 ? "Record inserted successfully!" : "Failed to insert record.";
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Inserting post failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Inserting post failed, no ID obtained.");
+                }
+            }
+        }
+    }
+
+    @Override
+    public String removeById(Integer postIdToRemove) {
+        deleteAssociations(postIdToRemove);
+        return deletePost(postIdToRemove);
+    }
+
+    @SneakyThrows
+    public int insertPost(Post entity) {
+        String sql = "insert into Post (content, created, updated) values (?, ?, ?);";
+
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
+            int affectedRows = executeUpdatePostWithEntity(preparedStatement, entity);
+
+            if (affectedRows == 0) {
+                throw new SQLException("Inserting post failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Inserting post failed, no ID obtained.");
+                }
+            }
+        }
+    }
+
+    @Override
+    public int insert2(Post entity, int labelId) {
+            int postId = insertPost(entity);
+            System.out.println("Post inserted with ID: " + postId);
+            insertPostLabel(postId, labelId);
+            System.out.println("Post associated with Label ID: " + labelId);
+        return postId;
+    }
+
+    @SneakyThrows
+    private void deleteAssociations(int postId) {
+        String deleteAssociationsSql = "DELETE FROM Post_Label WHERE post_id = ?";
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(deleteAssociationsSql)) {
+            preparedStatement.setInt(1, postId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    @SneakyThrows
+    private String deletePost(int postId) {
+        String result;
+        String deletePostSql = "DELETE FROM Post WHERE id = ?";
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(deletePostSql)) {
+            preparedStatement.setInt(1, postId);
+            result = preparedStatement.executeUpdate() > 0 ? "Post remove successfully!" : "Failed to remove Post.";
         }
         return result;
     }
 
     @SneakyThrows
-    @Override
-    public String removeById(Integer integer) {
-        String sql = "DELETE FROM post WHERE id = ?";
-        String result;
-        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
-            preparedStatement.setInt(1, integer);
-            result = preparedStatement.executeUpdate() > 0 ? "Post remove successfully!" : "Failed to remove Post.";
+    private void insertPostLabel(int postId, int labelId) {
+        String insertSql = "INSERT INTO Post_Label (post_id, label_id) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(insertSql)) {
+            preparedStatement.setInt(1, postId);
+            preparedStatement.setInt(2, labelId);
+
+            preparedStatement.executeUpdate();
         }
-        return result;
+    }
+
+    @SneakyThrows
+    private int executeUpdatePostWithEntity(PreparedStatement preparedStatement, Post entity) {
+        preparedStatement.setString(1, entity.getContent());
+        preparedStatement.setTimestamp(2, Timestamp.valueOf(entity.getCreated()));
+        preparedStatement.setTimestamp(3, Timestamp.valueOf(entity.getUpdated()));
+        return preparedStatement.executeUpdate();
     }
 
     @SneakyThrows
@@ -82,7 +151,6 @@ public class PostRepositoryImpl implements PostRepository {
         post.setContent(resultSet.getString("content"));
         post.setCreated(resultSet.getTimestamp("created").toLocalDateTime());
         post.setUpdated(resultSet.getTimestamp("updated").toLocalDateTime());
-        post.setLabels(resultSet.getInt("label_id"));
         return post;
     }
 }

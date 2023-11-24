@@ -58,11 +58,11 @@ class LabelServiceImplTest {
     @Test
     void insert() {
         Label expectedLabel = new Label("dolor sit amet");
-        when(labelRepositoryMock.save(expectedLabel)).thenReturn("Record inserted successfully!");
+        when(labelRepositoryMock.insert(expectedLabel)).thenReturn(1);
 
         labelService.insert(expectedLabel);
 
-        verify(labelRepositoryMock, times(1)).save(expectedLabel);
+        verify(labelRepositoryMock, times(1)).insert(expectedLabel);
     }
 
     @Test

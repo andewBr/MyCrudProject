@@ -24,7 +24,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public String insert(Label entity) {
+    public int insert(Label entity) {
         return labelRepository.insert(entity);
     }
 

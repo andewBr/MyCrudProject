@@ -8,6 +8,6 @@ import java.util.List;
 public interface PostService {
     Post findById(Integer id);
     List<Post> findAll();
-    String insert(Post entity);
+    int insert(Post entity, int LabelId);
     String removeById(Integer id);
 }

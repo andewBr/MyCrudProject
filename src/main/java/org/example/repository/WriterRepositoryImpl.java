@@ -6,6 +6,7 @@ import org.example.model.Writer;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +42,26 @@ public class WriterRepositoryImpl implements WriterRepository {
 
     @SneakyThrows
     @Override
-    public String insert(Writer entity) {
+    public int insert(Writer entity) {
         String sql = "insert into writer (firstName, lastName, post_id) values (?, ?, ?)";
-        String result;
         try (PreparedStatement preparedStatement = DatabaseManager.prepareStatement(sql)) {
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
             preparedStatement.setInt(3, entity.getPost_id());
-            result = preparedStatement.executeUpdate() > 0 ?  "Writer saved successfully!" : "Failed to insert record.";
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Inserting writer failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Inserting writer failed, no ID obtained.");
+                }
+            }
         }
-        return result;
     }
 
     @SneakyThrows
@@ -74,7 +85,4 @@ public class WriterRepositoryImpl implements WriterRepository {
         writer.setPost_id(resultSet.getInt("post_id"));
         return writer;
     }
-//    INSERT INTO Writer (firstName, lastName, post_id) VALUES ('Max', 'Korolev', 1);
-
-
 }

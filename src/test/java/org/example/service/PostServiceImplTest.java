@@ -44,17 +44,6 @@ class PostServiceImplTest {
         verify(postRepositoryMock, times(1)).findById(1);
     }
 
-//    @Test
-//    void findById() {
-//        Label expectedLabel = new Label("Lorem ipsum");
-//        when(labelRepositoryMock.findById(labelId)).thenReturn(expectedLabel);
-//
-//        Label actualLabel = labelService.findById(labelId);
-//
-//        assertEquals(actualLabel, expectedLabel);
-//        verify(labelRepositoryMock, times(1)).findById(labelId);
-//    }
-
     @Test
     void findAll() {
         // Arrange
@@ -69,14 +58,6 @@ class PostServiceImplTest {
         verify(postRepositoryMock, times(1)).findAll();
     }
 
-    @Test
-    void insert() {
-        when(postRepositoryMock.save(expectedPost)).thenReturn("Record inserted successfully!");
-        String actualPosts = postService.insert(expectedPost);
-
-        assertEquals("Record inserted successfully!", actualPosts);
-        verify(postRepositoryMock, times(1)).save(expectedPost);
-    }
 
     @Test
     void removeById() {

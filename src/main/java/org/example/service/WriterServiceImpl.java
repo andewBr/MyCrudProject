@@ -25,7 +25,7 @@ public class WriterServiceImpl implements WriterService {
     }
 
     @Override
-    public String save(Writer entity) {
+    public int save(Writer entity) {
         return writerRepository.insert(entity);
     }
 

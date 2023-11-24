@@ -7,6 +7,6 @@ import java.util.List;
 public interface WriterService {
     Writer findById(Integer id);
     List<Writer> findAll();
-    String save(Writer entity);
+    int save(Writer entity);
     String removeById(Integer id);
 }

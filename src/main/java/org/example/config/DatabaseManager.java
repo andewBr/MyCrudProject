@@ -23,7 +23,7 @@ public class DatabaseManager {
 
     @SneakyThrows
     public static PreparedStatement prepareStatement(String sqlRequest) {
-        return getConnection().prepareStatement(sqlRequest);
+        return getConnection().prepareStatement(sqlRequest, PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
     @SneakyThrows
